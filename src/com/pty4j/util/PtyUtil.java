@@ -6,12 +6,17 @@ import com.pty4j.windows.WinPty;
 import com.sun.jna.Platform;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.security.CodeSource;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Joiner;
+import com.google.common.io.ByteStreams;
 /**
  * @author traff
  */
@@ -87,14 +92,34 @@ public class PtyUtil {
       lib = lib.exists() ? lib : resolveNativeLibrary(new File(libFolder, "libpty"));
 
       if (!lib.exists()) {
-        throw new IllegalStateException(String.format("Couldn't find %s, jar folder %s", lib.getName(),
-                libFolder.getAbsolutePath()));
+        return unpackNativeLibrary();
       }
 
       return lib;
     } else {
       throw new IllegalStateException("Couldn't detect lib folder");
     }
+  }
+
+  private static File unpackNativeLibrary() throws IOException {
+    String platformFolder = getPlatformFolder();
+    String archFolder = getArchFolder();
+    String libName = getNativeLibraryName();
+    String resourceName = Joiner.on("/").join("", platformFolder, archFolder,
+        libName);
+    InputStream is = PtyUtil.class.getResourceAsStream(resourceName);
+    if (is == null) {
+      throw new IOException("Failed to load resource " + resourceName);
+    }
+
+    File location = new File(System.getProperty("java.io.tmpdir"), libName);
+    FileOutputStream fos = new FileOutputStream(location);
+    try {
+      ByteStreams.copy(is, fos);
+    } finally {
+      fos.close();
+    }
+    return location;
   }
 
   private static File resolveNativeLibrary(File parent) {
