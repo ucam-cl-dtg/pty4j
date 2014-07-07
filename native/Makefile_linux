@@ -18,7 +18,7 @@ ARCH_X86_64 = x86_64
 CC=gcc
 LD=libtool
 CPPFLAGS = -I.
-CFLAGS +=-B/usr/lib/x86_64-linux-gnu -fpic -D_REENTRANT -D_GNU_SOURCE
+CFLAGS +=-B/usr/lib/x86_64-linux-gnu -I/usr/include/x86_64-linux-gnu/ -fpic -D_REENTRANT -D_GNU_SOURCE
 
 ARCH_FLAG_X86 = -m32 
 ARCH_FLAG_X86_64 = 
