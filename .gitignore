@@ -2,3 +2,8 @@ bin
 bin_test
 generated
 
+/target
+.project
+.classpath
+.settings/
+.idea/
