@@ -6,6 +6,7 @@ import com.pty4j.windows.WinPty;
 import com.sun.jna.Platform;
 
 import java.io.File;
+import java.net.URI;
 import java.net.URLDecoder;
 import java.security.CodeSource;
 import java.util.List;
@@ -40,7 +41,16 @@ public class PtyUtil {
     File jarFile;
 
     if (codeSource.getLocation() != null) {
-      jarFile = new File(codeSource.getLocation().toURI());
+      URI location = codeSource.getLocation().toURI();
+      if (location.getScheme().equals("jar")) {
+        location = new URI(location.getSchemeSpecificPart());
+        if (location.getScheme().equals("file")) {
+          String part = location.getSchemeSpecificPart();
+          int index = part.lastIndexOf('!');
+          location = new URI(part.substring(0, index));
+        }
+      }
+      jarFile = new File(location.getPath());
     } else {
       String path = aclass.getResource(aclass.getSimpleName() + ".class").getPath();
 
