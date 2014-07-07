@@ -89,14 +89,16 @@ public class PtyUtil {
 
   private static File resolveNativeLibrary(File parent) {
     File path = new File(parent, getPlatformFolder());
-
-    path = isWinXp() ? new File(path, "xp") :
-            (Platform.is64Bit() ? new File(path, "x86_64") :
-                    new File(path, "x86"));
-
+    path = new File(path,getArchFolder());
     return new File(path, getNativeLibraryName());
   }
 
+  private static String getArchFolder() {
+	  if (isWinXp()) return "xp";
+	  else if (Platform.is64Bit()) return "x86_64";
+	  else return "x86";
+  }
+  
   private static String getPlatformFolder() {
     String result;
 
