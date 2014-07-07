@@ -34,7 +34,7 @@ public class PtyUtil {
    * @param aclass a class to find a jar
    * @return
    */
-  public static String getJarContainingFolderPath(Class aclass) throws Exception {
+  private static String getJarContainingFolderPath(Class aclass) throws Exception {
     CodeSource codeSource = aclass.getProtectionDomain().getCodeSource();
 
     File jarFile;
@@ -56,7 +56,7 @@ public class PtyUtil {
     return jarFile.getParentFile().getAbsolutePath();
   }
 
-  public static String getPtyLibFolderPath() throws Exception {
+  private static String getPtyLibFolderPath() throws Exception {
     if (PTY_LIB_FOLDER != null) {
       return PTY_LIB_FOLDER;
     }
@@ -87,7 +87,7 @@ public class PtyUtil {
     }
   }
 
-  public static File resolveNativeLibrary(File parent) {
+  private static File resolveNativeLibrary(File parent) {
     File path = new File(parent, getPlatformFolder());
 
     path = isWinXp() ? new File(path, "xp") :
